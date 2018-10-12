@@ -1,0 +1,3 @@
+BlockingQueue.o: BlockingQueue.cpp BlockingQueue.h
+main.o: main.cpp BlockingQueue.h
+BlockingQueue.o: BlockingQueue.h
