@@ -1,3 +1,11 @@
 BlockingQueue.o: BlockingQueue.cpp BlockingQueue.h
-main.o: main.cpp BlockingQueue.h
+BoundedQueue.o: BoundedQueue.cpp BoundedQueue.h
+Consumer.o: Consumer.cpp Consumer.h Worker.h BoundedQueue.h
+main.o: main.cpp Producer.h Worker.h BoundedQueue.h Consumer.h
+Producer.o: Producer.cpp Producer.h Worker.h BoundedQueue.h
+Worker.o: Worker.cpp Worker.h BoundedQueue.h
 BlockingQueue.o: BlockingQueue.h
+BoundedQueue.o: BoundedQueue.h
+Consumer.o: Consumer.h Worker.h BoundedQueue.h
+Producer.o: Producer.h Worker.h BoundedQueue.h
+Worker.o: Worker.h BoundedQueue.h
