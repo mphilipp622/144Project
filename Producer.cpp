@@ -1,29 +1,22 @@
 #include "Producer.h"
 
-Producer::Producer()
-{
-    //default ctor
-}
-
 Producer::Producer(BoundedQueue* newQueue, int newID, int newTimeInterval)
 {
     queue = newQueue;
     threadID = newID;
     maxTimeInterval = newTimeInterval;
-    currentTimeInterval = 0;
+    currentTimeInterval = rand() % maxTimeInterval + 1; // setup sleep time
     successes = 0;
-    item = intRand(1, 1000);
 
-    string message = "Producer " + to_string(threadID) + " Created Holding Item " + to_string(item) + "\n\n\n";
+    item = rand() % 1000;
+
+    string message = "Producer " + to_string(threadID) + " Created Holding Item " + to_string(item) +
+                     " with sleep time " + to_string(currentTimeInterval) + "\n\n";
 
     cout << message;
+
     // begin thread execution
     execThread = thread(&Producer::Update, this);
-}
-
-Producer::~Producer()
-{
-
 }
 
 void Producer::ProduceItem()
@@ -32,7 +25,7 @@ void Producer::ProduceItem()
 
 	if(queue->TryInsert(item)) 
 	{
-        string message = "Item ID " + to_string(item) + " produced by producer " + to_string(threadID) + "\n";
+        string message = "Item ID " + to_string(item) + " produced by producer " + to_string(threadID) + "\n\n";
 		
         cout << message;
 
@@ -51,8 +44,9 @@ void Producer::ProduceItem()
 void Producer::Update()
 {
     // This function loops a producer forever. Producer will attempt a coin flip and try producing item if coin flip is successful.
-	while(true)
-	{        
+
+    while(true)
+	{
 		if (rand() % 2 == 1)
 			// coin flip. If producer comes up with 1, we try producing
 			ProduceItem(); 

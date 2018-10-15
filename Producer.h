@@ -7,9 +7,7 @@ using namespace std;
 class Producer : public Worker
 {
 public:
-    Producer();
     Producer(BoundedQueue* newQueue, int newID, int newTimeInterval);
-    ~Producer();
 
 private:
     void Update() override;

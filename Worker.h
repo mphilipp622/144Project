@@ -4,15 +4,15 @@
 #include <iostream>
 #include <string>
 #include "BoundedQueue.h"
-#include <random>
 
 using namespace std;
 
-// Base class for consumers and producers
+// Base abstract class for consumers and producers
 class Worker
 {
 public:
     void JoinThread(); // used for main thread to pause program execution if necessary
+    // teads
 
 protected:
     int maxTimeInterval;
@@ -26,6 +26,4 @@ protected:
     BoundedQueue* queue;
 
     virtual void Update() = 0; // pure abstract function
-
-    int intRand(const int & min, const int & max);
 };

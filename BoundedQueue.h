@@ -23,5 +23,5 @@ private:
 	vector<int> items;
 	int front;
 	int nextEmpty;
-	const int maxItems = 100;
+	const int maxItems = 100; // Change this value for different queue sizes
 };

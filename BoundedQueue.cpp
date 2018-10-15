@@ -17,15 +17,13 @@ bool BoundedQueue::TryInsert(int item)
 {
 	bool success = false;
 	
-	lock.lock();
+	lock.lock(); // C++11 lock
 	
 	if((nextEmpty - front) < maxItems)
 	{
 		items.at(nextEmpty % maxItems) = item;
 		nextEmpty++;
-		
-		string message = "Queue has " + to_string(nextEmpty - front) + " Items in it\n";
-		cout << message;
+
 		success = true;
 	}
 	
@@ -44,8 +42,6 @@ bool BoundedQueue::TryRemove(int *item)
 	{
 		*item = items.at(front % maxItems);
 		front++;
-		string message = "Queue has " + to_string(nextEmpty - front) + " Items in it\n";
-		cout << message;
 		
 		success = true;
 	}

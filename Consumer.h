@@ -6,11 +6,9 @@ using namespace std;
 class Consumer : public Worker
 {
 public:
-    Consumer();
     Consumer(BoundedQueue* newQueue, int newID, int newTimeInterval);
-    ~Consumer();
 
 private:
-    void Update() override;
-    void ConsumeItem();
+    void Update() override; // Executes infinite loop where consumer tries consuming item every iteration
+    void ConsumeItem(); // consumer attempts to get item from queue.
 };

@@ -1,25 +1,19 @@
 #include "Consumer.h"
 
-Consumer::Consumer()
-{
-    // default ctor
-}
-
 Consumer::Consumer(BoundedQueue* newQueue, int newID, int newTimeInterval)
 {
     queue = newQueue;
     threadID = newID;
     maxTimeInterval = newTimeInterval;
-    currentTimeInterval = 0;
+    currentTimeInterval = rand() % maxTimeInterval + 1; // setup sleep time
     successes = 0;
+
+    string message = "Consumer " + to_string(threadID) + " created with sleep time " + 
+                     to_string(currentTimeInterval) + "\n\n";
+    cout << message;
 
     // begin thread execution
     execThread = thread(&Consumer::Update, this);
-}
-
-Consumer::~Consumer()
-{
-
 }
 
 void Consumer::ConsumeItem()
@@ -28,7 +22,7 @@ void Consumer::ConsumeItem()
 	
 	if(queue->TryRemove(&item))
 	{
-		string message = "Item ID " + to_string(item) + " consumed by consumer " + to_string(threadID) + "\n";
+		string message = "Item ID " + to_string(item) + " consumed by consumer " + to_string(threadID) + "\n\n";
 
         cout << message;
 
