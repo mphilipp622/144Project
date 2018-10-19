@@ -18,9 +18,10 @@ public:
 	bool TryRemove(int *item);
 	
 private:
-	mutex lock;
+	mutex lock; // C++11 lock
 	
 	vector<int> items;
+	
 	int front;
 	int nextEmpty;
 	const int maxItems = 100; // Change this value for different queue sizes

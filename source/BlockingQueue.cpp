@@ -1,4 +1,4 @@
-#include "BlockingQueue.h"
+#include "../headers/BlockingQueue.h"
 
 BlockingQueue::BlockingQueue()
 {

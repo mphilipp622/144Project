@@ -13,3 +13,5 @@ To compile and run the program, you can use the CompileAndRun.sh file by executi
 ./CompileAndRun.sh TP TC
 
 where TP is the max time interval for producers and TC is the max time interval for consumers. The script will run a make command to compile the program and then execute it with the arguments you passed to the shell script.
+
+All header files can be found in the "headers" folder. All cpp files can be found in the "source" folder.

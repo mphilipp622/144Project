@@ -1,4 +1,4 @@
-#include "Worker.h"
+#include "../headers/Worker.h"
 
 void Worker::JoinThread()
 {

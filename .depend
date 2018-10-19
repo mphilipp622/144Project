@@ -1,11 +1,17 @@
-BlockingQueue.o: BlockingQueue.cpp BlockingQueue.h
-BoundedQueue.o: BoundedQueue.cpp BoundedQueue.h
-Consumer.o: Consumer.cpp Consumer.h Worker.h BoundedQueue.h
-main.o: main.cpp Producer.h Worker.h BoundedQueue.h Consumer.h
-Producer.o: Producer.cpp Producer.h Worker.h BoundedQueue.h
-Worker.o: Worker.cpp Worker.h BoundedQueue.h
-BlockingQueue.o: BlockingQueue.h
-BoundedQueue.o: BoundedQueue.h
-Consumer.o: Consumer.h Worker.h BoundedQueue.h
-Producer.o: Producer.h Worker.h BoundedQueue.h
-Worker.o: Worker.h BoundedQueue.h
+BlockingQueue.o: source/BlockingQueue.cpp \
+ source/../headers/BlockingQueue.h
+BoundedQueue.o: source/BoundedQueue.cpp source/../headers/BoundedQueue.h
+Consumer.o: source/Consumer.cpp source/../headers/Consumer.h \
+ source/../headers/Worker.h source/../headers/BoundedQueue.h
+main.o: source/main.cpp source/../headers/Producer.h \
+ source/../headers/Worker.h source/../headers/BoundedQueue.h \
+ source/../headers/Consumer.h
+Producer.o: source/Producer.cpp source/../headers/Producer.h \
+ source/../headers/Worker.h source/../headers/BoundedQueue.h
+Worker.o: source/Worker.cpp source/../headers/Worker.h \
+ source/../headers/BoundedQueue.h
+BlockingQueue.o: headers/BlockingQueue.h
+BoundedQueue.o: headers/BoundedQueue.h
+Consumer.o: headers/Consumer.h headers/Worker.h headers/BoundedQueue.h
+Producer.o: headers/Producer.h headers/Worker.h headers/BoundedQueue.h
+Worker.o: headers/Worker.h headers/BoundedQueue.h

@@ -1,3 +1,4 @@
 #!/bin/sh
-make
-./myapp.exe "$@"
+make;
+printf "\n";
+./myapp.exe "$@";
