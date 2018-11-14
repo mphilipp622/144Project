@@ -3,7 +3,8 @@
 #include <cstdlib> // used for rand()
 #include <iostream>
 #include <string>
-#include "BoundedQueue.h"
+#include <random>
+#include "BlockingQueue.h"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ public:
     void JoinThread(); // Allows main thread to call join() on this thread
 
 protected:
-    int maxTimeInterval; // max sleep time of the thread
+    int maxTimeInterval; // max sleep time of the thread in ms
     int currentTimeInterval; // current sleep time of the thread
     int threadID; // id to track thread
 
@@ -22,7 +23,8 @@ protected:
 
     thread execThread; // c++11 thread
 
-    BoundedQueue* queue; // pointer to a bounded queue that this worker is accessing
+    BlockingQueue* queue; // pointer to a bounded queue that this worker is accessing
 
     virtual void Update() = 0; // pure abstract function. Implemented in Producer and Consumer.
+    int GetRandomNumber(int min, int max); // helper function for generating more accurate random numbers than rand()
 };

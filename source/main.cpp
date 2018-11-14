@@ -11,6 +11,7 @@ CSCI 144
 #include "../headers/Producer.h"
 #include "../headers/Consumer.h"
 #include "../headers/BoundedQueue.h"
+#include "../headers/BlockingQueue.h"
 
 int main(int argc, char *argv[])
 {
@@ -33,7 +34,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	BoundedQueue* queue = new BoundedQueue();
+	BlockingQueue* queue = new BlockingQueue();
 
 	Consumer* consumers[10];
 	Producer* producers[10];

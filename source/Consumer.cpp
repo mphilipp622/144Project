@@ -1,6 +1,6 @@
 #include "../headers/Consumer.h"
 
-Consumer::Consumer(BoundedQueue* newQueue, int newID, int newTimeInterval)
+Consumer::Consumer(BlockingQueue* newQueue, int newID, int newTimeInterval)
 {
     // initialize variables
     queue = newQueue;
@@ -8,7 +8,7 @@ Consumer::Consumer(BoundedQueue* newQueue, int newID, int newTimeInterval)
     maxTimeInterval = newTimeInterval;
     successes = 0;
 
-    currentTimeInterval = rand() % (maxTimeInterval + 1); // setup sleep time. (0 - maxTime)
+    currentTimeInterval = rand() % (maxTimeInterval + 1); // setup sleep time. (1 - maxTime)
 
     string message = "Consumer " + to_string(threadID) + " created with sleep time " + 
                      to_string(currentTimeInterval) + "\n\n";
@@ -21,27 +21,22 @@ Consumer::Consumer(BoundedQueue* newQueue, int newID, int newTimeInterval)
 
 void Consumer::ConsumeItem()
 {
-	int item;
 	
-    // Try to get an item from the bbq
-	if(queue->TryRemove(&item))
-	{
-		string message = to_string(item) + " consumed by consumer " + to_string(threadID) + "\n\n";
+    // Get an item from the bbq
+    queue->Remove(threadID);
 
-        cout << message; // output success message
+    if(++successes >= 2) // increment successes. Looking for consecutive success
+    {
+        currentTimeInterval = rand() % (maxTimeInterval + 1);
+        successes = 0;
+    }
 
-        if(++successes >= 2) // increment successes. Looking for consecutive success
-            currentTimeInterval = rand() % (maxTimeInterval + 1);
-
-		this_thread::sleep_for(chrono::seconds(currentTimeInterval)); // sleep the thread after it produces
-	}
-    else
-        successes = 0; // reset successes to interrupt consecutive count.
+    this_thread::sleep_for(chrono::seconds(currentTimeInterval)); // sleep the thread after it produces
 }
 
 void Consumer::Update()
 {
-    // Loop the thread inifinitely
+    // Loop the thread infinitely
 
     while(true)
 		ConsumeItem();

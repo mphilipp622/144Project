@@ -1,6 +1,6 @@
 #include "../headers/Producer.h"
 
-Producer::Producer(BoundedQueue* newQueue, int newID, int newTimeInterval)
+Producer::Producer(BlockingQueue* newQueue, int newID, int newTimeInterval)
 {
     // Assign variables
     queue = newQueue;
@@ -8,7 +8,7 @@ Producer::Producer(BoundedQueue* newQueue, int newID, int newTimeInterval)
     maxTimeInterval = newTimeInterval;
     successes = 0;
 
-     currentTimeInterval = rand() % (maxTimeInterval + 1); // setup sleep time. (0 - maxTime)
+    currentTimeInterval = 1000 * GetRandomNumber(0, maxTimeInterval + 1); // setup sleep time. (0 - maxTime)
 
     item = rand() % 1000; // item is a random number between 0 and 999
 
@@ -26,19 +26,16 @@ Producer::Producer(BoundedQueue* newQueue, int newID, int newTimeInterval)
 void Producer::ProduceItem()
 {
     // Try and insert item into the bbq
-	if(queue->TryInsert(item)) 
-	{
-        string message = to_string(item) + " produced by producer " + to_string(threadID) + "\n\n";
-		
-        cout << message; // print success message
+    queue->Insert(item, threadID);
 
-        if(++successes >= 2) // increment successes. If consecutive successes, change sleep time.
-            currentTimeInterval = rand() % (maxTimeInterval + 1);
+    // if(++successes >= 2) // increment successes. If consecutive successes, change sleep time.
+    // {
+        ChangeProductionSpeed();
+        // successes = 0;
+    // }
 
-		this_thread::sleep_for(chrono::seconds(currentTimeInterval)); // sleep the thread after it produces
-	}
-    else
-        successes = 0; // we're only looking for consecutive successes. reset current value if we don't produce
+	this_thread::sleep_for(chrono::milliseconds(currentTimeInterval)); // sleep the thread after it produces
+
 }
 
 void Producer::Update()
@@ -46,9 +43,30 @@ void Producer::Update()
     // This function loops a producer forever.
 
     while(true)
-	{
-		if (rand() % 2 == 1)
-			// coin flip. If producer comes up with 1, we try producing
-			ProduceItem(); 
-	}
+		ProduceItem();
+}
+
+void Producer::ChangeProductionSpeed()
+{
+    float capacity = queue->GetPercentageFull();
+    string message;
+
+    if(capacity >= 0.75)
+    {
+        // Modify time by the capacity percentage of the queue. If the capacity is high, time interval will approach max time interval.
+        // If capacity is low, time interval will approach 0
+        currentTimeInterval = 1000 * (capacity * maxTimeInterval); 
+        message = "Producer " + to_string(threadID) + " SLOWING DOWN TO " + to_string(currentTimeInterval) + "\n\n";
+    }
+    else if(capacity <= 0.25)
+    {
+        float twiceSpeed = maxTimeInterval / 2.0;
+        currentTimeInterval = 1000 * (maxTimeInterval - ((1 - capacity) * twiceSpeed));
+        message = "Producer " + to_string(threadID) + " SPEEDING UP TO " + to_string(currentTimeInterval) + "\n\n";
+    }
+    else
+        currentTimeInterval = GetRandomNumber(0, maxTimeInterval + 1); // random between 1 and maxInterval
+    
+    
+    cout << message;
 }

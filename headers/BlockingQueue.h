@@ -2,8 +2,10 @@
 
 #include <thread>
 #include <mutex>
-#include <condition_variable>
 #include <vector>
+#include <iostream>
+#include <string>
+#include <condition_variable>
 
 using namespace std;
 
@@ -13,17 +15,20 @@ public:
 	BlockingQueue();
 	~BlockingQueue();
 	
-	void Insert(int item);
-	int Remove();
+	void Insert(int item, int threadID);
+	void Remove(int threadID);
+	
+	// Returns how full the queue is as a percentage
+	float GetPercentageFull();
 	
 private:
-	mutex lock;
-	condition_variable itemAdded;
-	condition_variable itemRemoved;
-	
-	vector<int> items;
-	
-	int front;
-	int nextEmpty;
-	int maxItems;
+	mutex lock; // c++11 lock
+	condition_variable itemAdded; // C++11 CV
+	condition_variable itemRemoved; // C++11 CV
+
+    vector<int> items;
+
+    int front;
+    int nextEmpty;
+	const int maxItems = 25; // Change this value for different queue sizes
 };

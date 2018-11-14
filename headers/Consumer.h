@@ -7,7 +7,7 @@ class Consumer : public Worker
 {
 public:
     // bbq will be passed to ctor from main
-    Consumer(BoundedQueue* newQueue, int newID, int newTimeInterval);
+    Consumer(BlockingQueue* newQueue, int newID, int newTimeInterval);
 
 private:
     void Update() override; // Executes infinite loop where consumer tries consuming item every iteration
