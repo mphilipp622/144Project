@@ -55,17 +55,21 @@ void Producer::ChangeProductionSpeed()
     {
         // Modify time by the capacity percentage of the queue. If the capacity is high, time interval will approach max time interval.
         // If capacity is low, time interval will approach 0
-        currentTimeInterval = 1000 * (capacity * maxTimeInterval); 
+        int newTP = 1000 * (maxTimeInterval + (capacity * maxTimeInterval));
+
+        currentTimeInterval = GetRandomNumber(0, newTP + 1); 
         message = "Producer " + to_string(threadID) + " SLOWING DOWN TO " + to_string(currentTimeInterval) + "\n\n";
     }
     else if(capacity <= 0.25)
     {
-        float twiceSpeed = maxTimeInterval / 2.0;
-        currentTimeInterval = 1000 * (maxTimeInterval - ((1 - capacity) * twiceSpeed));
+        float twiceSpeed = (maxTimeInterval / 2.0); // 2 times the original interval value
+        int newTP = 1000 * (maxTimeInterval - ((1.0 - capacity) * twiceSpeed)); // multiple the two times speed by a value between 1 and 0.75 based on queue size.
+
+        currentTimeInterval = GetRandomNumber(0, newTP + 1);
         message = "Producer " + to_string(threadID) + " SPEEDING UP TO " + to_string(currentTimeInterval) + "\n\n";
     }
     else
-        currentTimeInterval = GetRandomNumber(0, maxTimeInterval + 1); // random between 1 and maxInterval
+        currentTimeInterval = GetRandomNumber(0, maxTimeInterval + 1) * 1000; // random between 1 and maxInterval
     
     
     cout << message;
