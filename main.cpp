@@ -8,10 +8,10 @@ CSCI 144
 #include <ctime> // used for timer
 #include <cstdlib>
 #include <string>
-#include "Producer.h"
-#include "Consumer.h"
-#include "BoundedQueue.h"
-#include "BlockingQueue.h"
+#include "headers/Producer.h"
+#include "headers/Consumer.h"
+#include "headers/BoundedQueue.h"
+#include "headers/BlockingQueue.h"
 
 int main(int argc, char *argv[])
 {
