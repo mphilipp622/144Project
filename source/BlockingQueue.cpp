@@ -1,6 +1,6 @@
 #include "../headers/BlockingQueue.h"
 
-const int BlockingQueue::maxItems = 100; // Change this for different queue sizes
+const int BlockingQueue::maxItems = 25; // Change this for different queue sizes
 
 BlockingQueue::BlockingQueue()
 {
@@ -11,21 +11,8 @@ BlockingQueue::BlockingQueue()
 		items.push_back(0);
 }
 
-BlockingQueue::BlockingQueue(int consumerInterval, int producerInterval) : BlockingQueue()
-{
-	output.open("data/" + to_string(maxItems) + "_" + to_string(producerInterval) + "_" + to_string(consumerInterval) + ".csv");
-	output << ",capacity,countFull,countEmpty\n";
-	output << to_string(0) + "," + to_string(GetPercentageFull() * 100) + "," + to_string(countFull) + "," + to_string(countEmpty) + "\n";
-
-
-	startTime = chrono::system_clock::now();
-
-	writeThread = thread(&BlockingQueue::WriteDataToCSV, this);
-}
-
 BlockingQueue::~BlockingQueue()
 {
-	output.close();	
 }
 
 void BlockingQueue::Insert(int item, int threadID)
@@ -36,10 +23,11 @@ void BlockingQueue::Insert(int item, int threadID)
 	// If queue is full, have producer wait for consumer to remove something
 	while((nextEmpty - front) == maxItems)
 	{
-		countFull++;
+		// Print waiting message
 		string message = "Producer " + to_string(threadID) + " Waiting to Produce\n\n";
 		cout << message;
 
+		// Force this thread to wait for another thread to notify it
 		itemRemoved.wait(uniqueLock);
 	}
 	
@@ -49,18 +37,18 @@ void BlockingQueue::Insert(int item, int threadID)
 	// Increment next index
 	nextEmpty++;
 
+	// print success message
 	string message = to_string(item) + " produced by producer " + to_string(threadID) + "\n\n";
-		
-	cout << message; // print success message
+	cout << message; 
 	
 	// release lock
 	uniqueLock.unlock();
 
 	// According to C++ std::condition_variable documentation:
-	// Manual unlocking is done before notifying, to avoid waking up
-    // the waiting thread only to block again
+	// Manual unlocking is done before notifying, to avoid an edge case where
+	// Thsi thread wakes up and blocks again instantly
 
-	// Notify waiting consumers
+	// Notify a waiting consumer
 	itemAdded.notify_one();
 }
 
@@ -74,10 +62,11 @@ void BlockingQueue::Remove(int threadID)
 	// If there is nothing in the queue, tell consumer to wait for producer to add something
 	while(front == nextEmpty)
 	{
-		countEmpty++;
+		// Print waiting message
 		string message = "Consumer " + to_string(threadID) + " Waiting to Consume\n\n";
 		cout << message;
 
+		// force this thread to wait for a notification from another thread
 		itemAdded.wait(uniqueLock);
 	}
 	
@@ -105,32 +94,6 @@ void BlockingQueue::Remove(int threadID)
 
 float BlockingQueue::GetPercentageFull()
 {
-    return (nextEmpty - front) / (float) maxItems; // returns how full the queue is as a percentage
-}
-
-void BlockingQueue::WriteDataToCSV()
-{
-	chrono::time_point<std::chrono::system_clock> previousSecond = chrono::system_clock::now();
-	while(true)
-	{
-		auto end = chrono::system_clock::now();
-		chrono::duration<double> elapsed = end - startTime; // get total time elapsed elapsed = end - startTime;
-		chrono::duration<double> elapsedSecond = end - previousSecond;
-
-		int oneSecond = elapsedSecond.count();
-
-		if(oneSecond >= 1)
-		{
-			output << to_string((int)elapsed.count()) + "," + to_string(GetPercentageFull() * 100) + "," + to_string(countFull) + "," + to_string(countEmpty) + "\n";
-			previousSecond = end;
-		}
-
-		if(elapsed.count() >= 60)
-		{
-			output.close();
-			exit(0);
-		}
-
-		// this_thread::sleep_for(chrono::seconds(1)); // sleep for a second and collect data again.
-	}
+	// returns how full the queue is as a float between 0 - 1.0. Multiply by 100 to get percentage
+    return (nextEmpty - front) / (float) maxItems; 
 }

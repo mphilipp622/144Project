@@ -14,7 +14,6 @@ class BlockingQueue
 {
 public:
 	BlockingQueue();
-	BlockingQueue(int consumerInterval, int producerInterval);
 	~BlockingQueue();
 	
 	void Insert(int item, int threadID);
@@ -29,17 +28,10 @@ private:
 	mutex lock; // c++11 lock
 	condition_variable itemAdded; // C++11 CV
 	condition_variable itemRemoved; // C++11 CV
-	thread writeThread;
 
-    vector<int> items;
+    vector<int> items;	// Holds the items that are currently in the queue.
 
+	// Circular array data.
     int front;
     int nextEmpty;
-
-	ofstream output; // outputs data to csv file for easy graphing.
-	int countFull, countEmpty;
-
-	chrono::time_point<std::chrono::system_clock> startTime;
-
-	void WriteDataToCSV();
 };

@@ -8,12 +8,11 @@ Consumer::Consumer(BlockingQueue* newQueue, int newID, int newTimeInterval)
     maxTimeInterval = newTimeInterval;
     successes = 0;
 
-    currentTimeInterval = rand() % (maxTimeInterval + 1); // setup sleep time. (1 - maxTime)
+    currentTimeInterval = rand() % (maxTimeInterval + 1); // setup sleep time. (0 to maxTime)
 
-    string message = "Consumer " + to_string(threadID) + " created with sleep time " + 
-                     to_string(currentTimeInterval) + "\n\n";
-
-    cout << message; // output initialization message
+    // output initialization message
+    string message = "Consumer " + to_string(threadID) + " created\n\n";
+    cout << message; 
 
     // begin thread execution
     execThread = thread(&Consumer::Update, this);
@@ -21,12 +20,12 @@ Consumer::Consumer(BlockingQueue* newQueue, int newID, int newTimeInterval)
 
 void Consumer::ConsumeItem()
 {
-	
     // Get an item from the bbq
     queue->Remove(threadID);
 
     if(++successes >= 2) // increment successes. Looking for consecutive success
     {
+        // Consecutive success means the consumer changes its sleep time
         currentTimeInterval = rand() % (maxTimeInterval + 1);
         successes = 0;
     }

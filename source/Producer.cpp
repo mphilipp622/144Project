@@ -8,15 +8,13 @@ Producer::Producer(BlockingQueue* newQueue, int newID, int newTimeInterval)
     maxTimeInterval = newTimeInterval;
     successes = 0;
 
-    currentTimeInterval = 1000 * GetRandomNumber(0, maxTimeInterval + 1); // setup sleep time. (0 - maxTime)
+    // setup sleep time in ms. (0 to maxTime)
+    currentTimeInterval = 1000 * GetRandomNumber(0, maxTimeInterval + 1); 
 
     item = rand() % 1000; // item is a random number between 0 and 999
 
     // Creation message
-    string message = "Producer " + to_string(threadID) + " created holding item " + to_string(item) +
-                     " with sleep time " + to_string(currentTimeInterval) + "\n\n";
-
-    // output message
+    string message = "Producer " + to_string(threadID) + " created holding item " + to_string(item) + "\n\n";
     cout << message;
 
     // begin thread execution. Have to use "this" to call a member function.
@@ -28,11 +26,7 @@ void Producer::ProduceItem()
     // Try and insert item into the bbq
     queue->Insert(item, threadID);
 
-    // if(++successes >= 2) // increment successes. If consecutive successes, change sleep time.
-    // {
-        ChangeProductionSpeed();
-        // successes = 0;
-    // }
+    ChangeProductionSpeed(); // Change production speed after successful insert
 
 	this_thread::sleep_for(chrono::milliseconds(currentTimeInterval)); // sleep the thread after it produces
 
@@ -48,13 +42,15 @@ void Producer::Update()
 
 void Producer::ChangeProductionSpeed()
 {
+    // This function changes the producer's sleep time based on the number of items currently in the queue
     float capacity = queue->GetPercentageFull();
     string message;
 
+    /* Modify time by the capacity percentage of the queue. 
+        If the capacity is high, time interval will approach max time interval.
+        If capacity is low, time interval will approach 0 */
     if(capacity >= 0.75)
     {
-        // Modify time by the capacity percentage of the queue. If the capacity is high, time interval will approach max time interval.
-        // If capacity is low, time interval will approach 0
         int newTP = 1000 * (maxTimeInterval + (capacity * maxTimeInterval));
 
         currentTimeInterval = GetRandomNumber(0, newTP + 1); 
@@ -68,6 +64,4 @@ void Producer::ChangeProductionSpeed()
     }
     else
         currentTimeInterval = GetRandomNumber(0, maxTimeInterval + 1) * 1000; // random between 1 and maxInterval
-    
-    
 }

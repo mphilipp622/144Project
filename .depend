@@ -1,5 +1,5 @@
 main.o: main.cpp headers/Producer.h headers/Worker.h \
- headers/BlockingQueue.h headers/Consumer.h headers/BoundedQueue.h
+ headers/BlockingQueue.h headers/Consumer.h
 BlockingQueue.o: source/BlockingQueue.cpp \
  source/../headers/BlockingQueue.h
 BoundedQueue.o: source/BoundedQueue.cpp source/../headers/BoundedQueue.h
